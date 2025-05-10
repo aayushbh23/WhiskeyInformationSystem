@@ -4,6 +4,7 @@ import cqu.wis.data.WhiskeyData;
 import cqu.wis.data.WhiskeyData.WhiskeyDetails;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 /**
  *
@@ -68,5 +69,14 @@ public class WhiskeyDataManager {
     
     public void disconnect() throws SQLException {
         wd.disconnect();
+    }
+    
+    // For testing
+    public void setDetails(WhiskeyDetails[] details) {
+        List list = Arrays.asList(details);
+        records = new ArrayList<>(list);           
+        numberOfRecords = records.size();
+        currentIndex   = ( numberOfRecords == 0 ) ? -1 : 0;
+        currentRecord = ( numberOfRecords == 0 ) ? null : records.get( 0 );
     }
 }
