@@ -2,6 +2,9 @@ package cqu.wis.view;
 
 import cqu.wis.data.WhiskeyData;
 import cqu.wis.roles.WhiskeyDataManager;
+import cqu.wis.roles.ValidationResponse;
+import cqu.wis.roles.WhiskeyDataValidator;
+import cqu.wis.roles.WhiskeyDataValidator.*;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -63,8 +66,9 @@ public class QueryController implements Initializable{
     @FXML 
     private Button exitButton;
     
-    WhiskeyData wd = new WhiskeyData();
-    WhiskeyDataManager wdm = new WhiskeyDataManager(wd);
+    private WhiskeyData wd;
+    private WhiskeyDataManager wdm;
+    private WhiskeyDataValidator wdv;
         
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -76,6 +80,12 @@ public class QueryController implements Initializable{
         } catch (SQLException e) {
             System.err.println("Failed to connect to whiskey database: " + e.getMessage());
         }
+    }
+    
+    public void inject(WhiskeyData wd, WhiskeyDataManager wdm, WhiskeyDataValidator wdv) {
+        this.wd = wd;
+        this.wdm = wdm;
+        this.wdv = wdv;
     }
     
     @FXML
@@ -91,26 +101,39 @@ public class QueryController implements Initializable{
     @FXML
     private void handleRegionMalts() {
         String r = regionQueryField.getText().trim();
+        ValidationResponse validation = wdv.checkRegion(r);
+        
+        if (!validation.isValid().result()) {
+           messageText.setText(validation.message());
+           return;
+        }
+        
         try {
             int count = wdm.findMaltsFromRegion(r);
             updateDisplayAfterQuery(count);
         } catch (Exception e) {
             messageText.setText("Error retrieving region malts: " + e.getMessage());
-        }
+        }  
     }
 
     @FXML
     private void handleAgeRangeMalts() {
         String r1 = minAgeField.getText().trim();
         String r2 = maxAgeField.getText().trim();
+        RangeValidationResponse validation = wdv.checkAgeRange(r1, r2);
+        
+        if (!validation.result()) {
+            messageText.setText(validation.message());
+            return;
+        }
+        
         try {
-            int min = r1.isEmpty() ? 0 : Integer.parseInt(r1);
-            int max = r2.isEmpty() ? 100 : Integer.parseInt(r2);
-            int count = wdm.findMaltsInAgeRange(min, max);
+            Range range = validation.r();
+            int count = wdm.findMaltsInAgeRange(range.lower(), range.upper());
             updateDisplayAfterQuery(count);
         } catch (Exception e) {
             messageText.setText("Error retrieving age range malts: " + e.getMessage());
-        }
+        } 
     }
 
     private void updateDisplayAfterQuery(int count) {
