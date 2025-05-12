@@ -74,12 +74,6 @@ public class QueryController implements Initializable{
     public void initialize(URL url, ResourceBundle rb) {
         // Initialize button states
         setNavigationButtonsDisabled(true);
-        
-        try {
-            wd.connect();
-        } catch (SQLException e) {
-            System.err.println("Failed to connect to whiskey database: " + e.getMessage());
-        }
     }
     
     public void inject(WhiskeyData wd, WhiskeyDataManager wdm, WhiskeyDataValidator wdv) {
@@ -103,7 +97,7 @@ public class QueryController implements Initializable{
         String r = regionQueryField.getText().trim();
         ValidationResponse validation = wdv.checkRegion(r);
         
-        if (!validation.isValid().result()) {
+        if (!validation.result()) {
            messageText.setText(validation.message());
            return;
         }
