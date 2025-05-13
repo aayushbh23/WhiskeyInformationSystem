@@ -11,7 +11,7 @@ import java.util.List;
 public class WhiskeyData {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/WHISKEY";
     private static final String DB_USER = "root"; 
-    private static final String DB_PASSWORD = "123SamuraiX!@#";
+    private static final String DB_PASSWORD = "pass";
     
     public record WhiskeyDetails(String distillery, int age, String region, int price) {
         @Override
