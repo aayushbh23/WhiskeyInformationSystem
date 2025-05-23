@@ -1,7 +1,6 @@
 package cqu.wis.roles;
 
 import java.util.HashMap;
-import java.util.Map;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 

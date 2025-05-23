@@ -1,14 +1,18 @@
 package cqu.wis;
 
+import cqu.wis.data.UserData;
 import cqu.wis.data.WhiskeyData;
 import cqu.wis.roles.SceneCoordinator;
 import cqu.wis.roles.SceneCoordinator.SceneKey;
+import cqu.wis.roles.UserDataManager;
+import cqu.wis.roles.UserDataValidator;
 import cqu.wis.roles.WhiskeyDataManager;
 import cqu.wis.roles.WhiskeyDataValidator;
+import cqu.wis.view.LoginController;
+import cqu.wis.view.PasswordController;
 import cqu.wis.view.QueryController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -46,19 +50,41 @@ public class App extends Application {
         // root node of the scene graph.
 
         try {
-            // create data related objects
+            // Create data objects
             WhiskeyData wd = new WhiskeyData();
             WhiskeyDataManager wdm = new WhiskeyDataManager(wd);
             WhiskeyDataValidator wdv = new WhiskeyDataValidator();
-            // connect to the database
+
+            UserData ud = new UserData();
+            UserDataManager udm = new UserDataManager(ud);
+            UserDataValidator udv = new UserDataValidator();
+
+            // Connect to databases
             wd.connect();
+            ud.connect();
+            
+            // create the login scene
+            Scene ls = makeScene(SceneKey.LOGIN);
+            // inject required objects into the login controller
+            LoginController lc = (LoginController) ls.getUserData();
+            lc.inject(sc, udm, udv);
+            sc.addScene(SceneKey.LOGIN, ls);
+            
+            // create the password scene
+            Scene ps = makeScene(SceneKey.PASSWORD);
+            // inject required objects into the password controller
+            PasswordController pc = (PasswordController) ps.getUserData();
+            pc.inject(sc, udm, udv);
+            sc.addScene(SceneKey.PASSWORD, ps);
+            
             // create the query scene 
             Scene qs = makeScene(SceneKey.QUERY);
             // inject required objects into the query controller
             QueryController qc = (QueryController) qs.getUserData();
             qc.inject(sc, wdm, wdv);
             sc.addScene(SceneKey.QUERY, qs);
-            sc.start(SceneKey.QUERY);
+            
+            sc.start(SceneKey.LOGIN);
 
         } catch (Exception e) {
             System.err.println("Failed to start application: " + e.getMessage());

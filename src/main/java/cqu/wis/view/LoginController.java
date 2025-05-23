@@ -51,12 +51,13 @@ public class LoginController implements Initializable {
 
     @FXML
     private void handleLogin() {
-        
+        sc.setScene(SceneCoordinator.SceneKey.QUERY);
     }
 
     @FXML
     private void handleChangePassword() {
         handleClear();
+        sc.setScene(SceneCoordinator.SceneKey.PASSWORD);
     }
 
     @FXML

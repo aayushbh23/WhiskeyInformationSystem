@@ -57,7 +57,7 @@ public class PasswordController implements Initializable {
 
     @FXML
     private void handleSubmit() {
-        
+        sc.setScene(SceneCoordinator.SceneKey.LOGIN);
     }
 
     @FXML
