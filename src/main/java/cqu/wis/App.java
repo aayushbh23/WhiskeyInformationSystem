@@ -1,6 +1,8 @@
 package cqu.wis;
 
 import cqu.wis.data.WhiskeyData;
+import cqu.wis.roles.SceneCoordinator;
+import cqu.wis.roles.SceneCoordinator.SceneKey;
 import cqu.wis.roles.WhiskeyDataManager;
 import cqu.wis.roles.WhiskeyDataValidator;
 import cqu.wis.view.QueryController;
@@ -26,12 +28,6 @@ import java.io.IOException;
  * @author Ayush Bhandari S12157470
  */
 public class App extends Application {
-
-    /**
-     * The main scene used by the application.
-     */
-    private static Scene scene;
-
     /**
      * Called when the JavaFX application is launched.
      * 
@@ -43,31 +39,42 @@ public class App extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
+        SceneCoordinator sc = new SceneCoordinator(stage);
+        // Configure each scene and add it to the coordinator.
+        // Transitions between scenes are achieved by the controller for a 
+        // scene requesting the coordinator to make a particular scene the 
+        // root node of the scene graph.
+
         try {
-            // Initialize data layer and services
+            // create data related objects
             WhiskeyData wd = new WhiskeyData();
-            wd.connect();
             WhiskeyDataManager wdm = new WhiskeyDataManager(wd);
             WhiskeyDataValidator wdv = new WhiskeyDataValidator();
-
-            // Load FXML and controller
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/cqu/wis/view/query.fxml"));
-            Parent root = loader.load();
-
-            // Inject dependencies into controller
-            QueryController queryController = loader.getController();
-            queryController.inject(wd, wdm, wdv);
-
-            // Setup and show scene
-            stage.setScene(new Scene(root));
-            stage.setTitle("Whiskey Information System");
-            stage.show();
+            // connect to the database
+            wd.connect();
+            // create the query scene 
+            Scene qs = makeScene(SceneKey.QUERY);
+            // inject required objects into the query controller
+            QueryController qc = (QueryController) qs.getUserData();
+            qc.inject(sc, wdm, wdv);
+            sc.addScene(SceneKey.QUERY, qs);
+            sc.start(SceneKey.QUERY);
 
         } catch (Exception e) {
             System.err.println("Failed to start application: " + e.getMessage());
             e.printStackTrace();
             System.exit(1);
         }
+    }
+    
+    private static Scene makeScene(SceneKey key) throws Exception  {
+        // construct path name for fxml file
+        String fxml = "/cqu/wis/view/"+key.name().toLowerCase()+".fxml";
+        // create scene object and add a reference to its controller object
+        FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml));
+        Scene scene = new Scene(loader.load());
+        scene.setUserData(loader.getController());
+        return scene;
     }
 
     /**

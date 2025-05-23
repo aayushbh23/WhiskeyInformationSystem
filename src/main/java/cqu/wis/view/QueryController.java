@@ -1,6 +1,7 @@
 package cqu.wis.view;
 
 import cqu.wis.data.WhiskeyData;
+import cqu.wis.roles.SceneCoordinator;
 import cqu.wis.roles.WhiskeyDataManager;
 import cqu.wis.roles.ValidationResponse;
 import cqu.wis.roles.WhiskeyDataValidator;
@@ -72,7 +73,7 @@ public class QueryController implements Initializable {
     @FXML 
     private Button exitButton;
 
-    private WhiskeyData wd;
+    private SceneCoordinator sc;
     private WhiskeyDataManager wdm;
     private WhiskeyDataValidator wdv;
     
@@ -90,15 +91,15 @@ public class QueryController implements Initializable {
     }
 
     /**
-     * Injects the required dependencies into the controller. This method is typically called by the JavaFX framework 
-     * to set up the controller with the necessary data and services.
+     * Injects the required dependencies into the controller.This method is typically called by the JavaFX framework 
+ to set up the controller with the necessary data and services.
      * 
-     * @param wd   The {@code WhiskeyData} object containing whiskey data.
+     * @param sc   The {@code SceneCoordinator} object containing scene coordinator data.
      * @param wdm  The {@code WhiskeyDataManager} object used for managing whiskey data.
      * @param wdv  The {@code WhiskeyDataValidator} object used for validating input.
      */
-    public void inject(WhiskeyData wd, WhiskeyDataManager wdm, WhiskeyDataValidator wdv) {
-        this.wd = wd;
+    public void inject(SceneCoordinator sc, WhiskeyDataManager wdm, WhiskeyDataValidator wdv) {
+        this.sc = sc;
         this.wdm = wdm;
         this.wdv = wdv;
     }

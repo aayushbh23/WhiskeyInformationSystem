@@ -20,7 +20,7 @@ public class WhiskeyData {
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/WHISKEY"; // Update as needed
     private static final String DB_USER = "root"; // Update as needed
-    private static final String DB_PASSWORD = "pass"; // Update as needed
+    private static final String DB_PASSWORD = "123SamuraiX!@#"; // Update as needed
 
     /**
      * Represents the details of a single malt whiskey.
