@@ -82,9 +82,12 @@ public class UserDataValidator {
             return ValidationResponse.invalid("New password must be at least 8 characters long.");
         }
         if (!PASSWORD_PATTERN.matcher(newp).matches()) {
-            return ValidationResponse.invalid("New password must contain at least 8 characters, including one uppercase, one lowercase, one number, and one special character.");
+            return ValidationResponse.invalid("New password must contain at least 8 characters, including 1 uppercase, 1 lowercase, 1 number and 1 special character.");
         }
-        
+        if (oldp.equals(newp)) {
+            return ValidationResponse.invalid("New password must be different from current password");
+        }
+
         if (ud.hasDefaultPassword()) {
             return oldp.equals(DEFAULT_PASSWORD)
                 ? ValidationResponse.isValid()

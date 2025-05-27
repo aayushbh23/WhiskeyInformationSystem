@@ -9,7 +9,7 @@ import java.sql.*;
 public class UserData {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/USERS"; // Update as needed
     private static final String DB_USER = "root"; // Update as needed
-    private static final String DB_PASSWORD = "123SamuraiX!@#"; // Update as needed
+    private static final String DB_PASSWORD = "pass"; // Update as needed
     
     public record UserDetails(String user, String password){
         public boolean hasDefaultPassword() {
@@ -70,7 +70,7 @@ public class UserData {
             stmt.setString(2, n);
             
             int rowsAffected = stmt.executeUpdate();
-            return rowsAffected;
+            return (rowsAffected > 0) ? 1 : 0;
         } catch (SQLException e) {
             throw new SQLException("Error updating password: " + e.getMessage());
         }

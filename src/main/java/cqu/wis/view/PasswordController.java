@@ -1,8 +1,10 @@
 package cqu.wis.view;
 
+import cqu.wis.data.UserData;
 import cqu.wis.roles.SceneCoordinator;
 import cqu.wis.roles.UserDataManager;
 import cqu.wis.roles.UserDataValidator;
+import cqu.wis.roles.ValidationResponse;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -57,7 +59,47 @@ public class PasswordController implements Initializable {
 
     @FXML
     private void handleSubmit() {
-        sc.setScene(SceneCoordinator.SceneKey.LOGIN);
+        String username = usernameField.getText().trim();
+        String oldPassword = oldPasswordField.getText().trim();
+        String newPassword = newPasswordField.getText().trim();
+        
+        try {
+            UserData.UserDetails userDetails = udm.findUser(username);
+            
+            // Check if new password is valid
+            ValidationResponse newPasswordCheck = udv.checkForFieldsPresent(username, oldPassword, newPassword);
+            if (!newPasswordCheck.result()) {
+                messageText.setText(newPasswordCheck.message());
+                return;
+            }
+
+            // Verify current credentials
+            ValidationResponse credentialCheck = udv.checkCurrentDetails(userDetails, username, oldPassword);
+
+            if (!credentialCheck.result()) {
+                messageText.setText(credentialCheck.message());
+                return;
+            }
+            
+            // Check new password meets requirement.
+            ValidationResponse newPasswordCredentialCheck = udv.checkNewDetails(userDetails, username, oldPassword, newPassword);
+            if (!newPasswordCredentialCheck.result()) {
+                messageText.setText(newPasswordCredentialCheck.message());
+                return;
+            }
+            
+            String encryptedPassword = udv.generateSHA1(newPassword);
+            int success = udm.updatePassword(username, encryptedPassword);
+
+            if (success == 1) {
+                messageText.setText("Password changed successfully");
+                sc.setScene(SceneCoordinator.SceneKey.LOGIN);
+            } else {
+                messageText.setText("Failed to update password");
+            }
+        } catch (Exception e) {
+            messageText.setText("Error: " + e.getMessage());
+        }
     }
 
     @FXML
