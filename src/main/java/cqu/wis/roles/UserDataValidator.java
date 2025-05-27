@@ -3,6 +3,7 @@ package cqu.wis.roles;
 import cqu.wis.data.UserData.UserDetails;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -10,6 +11,11 @@ import java.security.NoSuchAlgorithmException;
  */
 public class UserDataValidator {
     private static final int MINIMUM_PASSWORD_LENGTH = 8;
+    private static final String DEFAULT_PASSWORD = "password";
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z]+$");
+    public static final Pattern PASSWORD_PATTERN = Pattern.compile(
+        "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$"
+    );
 
     public String generateSHA1(String s) {
         try {
@@ -29,28 +35,92 @@ public class UserDataValidator {
         }
     }
     
-    public void UserDataValidator(){
-        
-    }
+    public void UserDataValidator(){}
    
     public ValidationResponse checkCurrentDetails(UserDetails ud, String n, String oldp) {
         
-        return null;
+        ValidationResponse fieldsCheck = checkForFieldsPresent(n, oldp);
+        if (!ValidationResponse.isValid().result()) {
+            return fieldsCheck;
+        } 
+
+        if (!USERNAME_PATTERN.matcher(n).matches()) {
+            return ValidationResponse.invalid("Username must contain only letters");
+        }
+
+        if (ud == null) {
+            return ValidationResponse.invalid("Username not found");
+        }
+
+        if (ud.hasDefaultPassword()) {
+            return oldp.equals(DEFAULT_PASSWORD)
+                ? ValidationResponse.isValid()
+                : ValidationResponse.invalid("Invalid password");
+        } else {
+            String encryptedInput = generateSHA1(oldp);
+            return encryptedInput.equals(ud.password())
+                ? ValidationResponse.isValid()
+                : ValidationResponse.invalid("Invalid password");
+        }
         
     }
     public ValidationResponse checkNewDetails(UserDetails ud, String n, String oldp, String newp) {
+        ValidationResponse fieldsCheck = checkForFieldsPresent(n, oldp, newp);
+        if (!ValidationResponse.isValid().result()) {
+            return fieldsCheck;
+        } 
+
+        if (!USERNAME_PATTERN.matcher(n).matches()) {
+            return ValidationResponse.invalid("Username must contain only letters");
+        }
+
+        if (ud == null) {
+            return ValidationResponse.invalid("Username not found");
+        }
         
-        return null;
+        if (newp.length() < MINIMUM_PASSWORD_LENGTH) {
+            return ValidationResponse.invalid("New password must be at least 8 characters long.");
+        }
+        if (!PASSWORD_PATTERN.matcher(newp).matches()) {
+            return ValidationResponse.invalid("New password must contain at least 8 characters, including one uppercase, one lowercase, one number, and one special character.");
+        }
+        
+        if (ud.hasDefaultPassword()) {
+            return oldp.equals(DEFAULT_PASSWORD)
+                ? ValidationResponse.isValid()
+                : ValidationResponse.invalid("Invalid Old password");
+        } else {
+            String encryptedInput = generateSHA1(oldp);
+            if (!encryptedInput.equals(ud.password())) {
+                return ValidationResponse.invalid("Invalid old password");
+            }
+        }
+        return ValidationResponse.isValid();
         
     }
     public ValidationResponse checkForFieldsPresent(String n, String p) {
        
-        return null;
+        if (n == null || n.isEmpty()) {
+            return ValidationResponse.invalid("Username is required");
+        }
+        if (p == null || p.isEmpty()) {
+            return ValidationResponse.invalid("Password is required");
+        }
+        return ValidationResponse.isValid();
        
     }
     public ValidationResponse checkForFieldsPresent(String n, String oldp, String newp) {
        
-        return null;
+       if (n == null || n.isEmpty()) {
+            return ValidationResponse.invalid("Username is required");
+        }
+        if (oldp == null || oldp.isEmpty()) {
+            return ValidationResponse.invalid("Old Password is required");
+        }
+        if (newp == null || newp.isEmpty()) {
+            return ValidationResponse.invalid("New Password is required");
+        }
+        return ValidationResponse.isValid();
        
     }
 }

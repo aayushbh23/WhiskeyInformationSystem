@@ -35,7 +35,7 @@ public class App extends Application {
     /**
      * Called when the JavaFX application is launched.
      * 
-     * Initializes the model classes ({@link WhiskeyData}, {@link WhiskeyDataManager}, {@link WhiskeyDataValidator}),
+     * Initializes the model classes ({@link WhiskeyData}, {@link WhiskeyDataManager}, {@link WhiskeyDataValidator}, {@link UserData}, {@link UserDataManager}, {@link UserDataValidator})
      * loads the FXML user interface, injects dependencies into the controller, and displays the main window.
      *
      * @param stage the primary stage for this application
@@ -88,7 +88,6 @@ public class App extends Application {
 
         } catch (Exception e) {
             System.err.println("Failed to start application: " + e.getMessage());
-            e.printStackTrace();
             System.exit(1);
         }
     }

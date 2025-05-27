@@ -1,8 +1,10 @@
 package cqu.wis.view;
 
+import cqu.wis.data.UserData;
 import cqu.wis.roles.SceneCoordinator;
 import cqu.wis.roles.UserDataManager;
 import cqu.wis.roles.UserDataValidator;
+import cqu.wis.roles.ValidationResponse;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -51,7 +53,38 @@ public class LoginController implements Initializable {
 
     @FXML
     private void handleLogin() {
-        sc.setScene(SceneCoordinator.SceneKey.QUERY);
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
+
+        ValidationResponse fieldsCheck = udv.checkForFieldsPresent(username, password);
+        if (!fieldsCheck.result()) {
+            messageText.setText(fieldsCheck.message());
+            return;
+        }
+
+        try {
+            UserData.UserDetails userDetails = udm.findUser(username);
+            ValidationResponse credentialCheck = udv.checkCurrentDetails(userDetails, username, password);
+
+            if (!credentialCheck.result()) {
+                messageText.setText(credentialCheck.message());
+                return;
+            }
+
+            if (userDetails.hasDefaultPassword()) {
+                // Only show this message if they used the actual default password
+                if (password.equals("password")) {
+                    messageText.setText("Please change your default password");
+                    sc.setScene(SceneCoordinator.SceneKey.PASSWORD);
+                } else {
+                    messageText.setText("Invalid password");
+                }
+            } else {
+                sc.setScene(SceneCoordinator.SceneKey.QUERY);
+            }
+        } catch (Exception e) {
+            messageText.setText("Login error: " + e.getMessage());
+        }
     }
 
     @FXML
