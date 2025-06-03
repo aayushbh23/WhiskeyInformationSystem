@@ -5,10 +5,10 @@ import java.util.regex.Pattern;
 /**
  * Provides validation logic for whiskey data input, such as age ranges and region names.
  * This class is used to validate user input fields before querying or inserting whiskey data.
- * It ensures that age bounds are logical and numeric, and that region names are alphabetic and non-empty.
+ * It ensures that age bounds are logical and numeric and that region names are alphabetic and non-empty.
  * 
  * The validation results are encapsulated in simple record types that indicate whether the validation passed,
- * provide additional context (like computed bounds), and include error messages if applicable.
+ * provide additional context (like computed bounds) and include error messages if applicable.
  * 
  * @author Ayush Bhandari S12157470
  */
@@ -25,9 +25,9 @@ public class WhiskeyDataValidator {
     /**
      * Represents the result of validating an age range.
      * 
-     * @param result  whether the validation was successful
-     * @param r       the validated {@link Range}, or {@code null} if validation failed
-     * @param message the error message if validation failed, or empty if successful
+     * @param result whether the validation was successful
+     * @param r the validated {@link Range} or {@code null} if validation failed
+     * @param message the error message if validation failed or empty if successful
      */
     public record RangeValidationResponse(boolean result, Range r, String message) {}
 
@@ -40,12 +40,11 @@ public class WhiskeyDataValidator {
 
     /**
      * Validates an age range given as two string inputs.
-     * <ul>
-     *   <li>If both bounds are empty or null, validation fails.</li>
-     *   <li>If one bound is missing, it defaults to 0 (lower) or 100 (upper).</li>
-     *   <li>Negative values and upper bounds less than lower bounds are invalid.</li>
-     *   <li>Non-numeric values result in failure.</li>
-     * </ul>
+     * 
+     * If both bounds are empty or null, validation fails.
+     * If one bound is missing, it defaults to 0 (lower) or 100 (upper).
+     * Negative values and upper bounds less than lower bounds are invalid.
+     * Non-numeric values result in failure.
      *
      * @param b1 the lower age bound as a string (may be empty or null)
      * @param b2 the upper age bound as a string (may be empty or null)
@@ -77,11 +76,9 @@ public class WhiskeyDataValidator {
 
     /**
      * Validates a whiskey region name.
-     * <ul>
-     *   <li>The region must not be null or empty.</li>
-     *   <li>The region must contain only letters (A-Z, a-z).</li>
-     * </ul>
-     *
+     * The region must not be null or empty.
+     * The region must contain only letters (A-Z, a-z).
+     * 
      * @param r the region name to validate
      * @return a {@link ValidationResponse} indicating the result and error message if any
      */

@@ -6,8 +6,8 @@ package cqu.wis.roles;
  * This record is commonly used across the application to standardize responses from
  * input validators such as region or age field checks.
  * 
- * @param result  {@code true} if the input passed validation; {@code false} otherwise
- * @param message the error message if validation failed, or an empty string if successful
+ * @param result {@code true} if the input passed validation; {@code false} otherwise
+ * @param message the error message if validation failed or an empty string if successful
  * 
  * @author Ayush Bhandari S12157470
  */

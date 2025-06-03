@@ -7,7 +7,6 @@ import cqu.wis.roles.ValidationResponse;
 import cqu.wis.roles.WhiskeyDataValidator;
 import cqu.wis.roles.WhiskeyDataValidator.*;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,7 +21,7 @@ import javafx.scene.control.TextField;
  * and with {@code WhiskeyDataValidator} to validate user inputs.
  * 
  * The {@code QueryController} is responsible for initializing the user interface components, handling actions on buttons like 
- * searching for malts, clearing input fields, navigating through records, and displaying results or error messages.
+ * searching for malts, clearing input fields, navigating through records and displaying results or error messages.
  * 
  * @author Ayush Bhandari S12157470
  */
@@ -81,8 +80,8 @@ public class QueryController implements Initializable {
      * Initializes the controller by setting the initial state of the buttons.
      * The navigation buttons are initially disabled, awaiting user input.
      * 
-     * @param url The location used to resolve relative paths for the root object, or null if the location is not known.
-     * @param rb  The resources used to localize the root object, or null if the resources are not available.
+     * @param url The location used to resolve relative paths for the root object or null if the location is not known.
+     * @param rb The resources used to localize the root object or null if the resources are not available.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -94,9 +93,9 @@ public class QueryController implements Initializable {
      * Injects the required dependencies into the controller.This method is typically called by the JavaFX framework 
  to set up the controller with the necessary data and services.
      * 
-     * @param sc   The {@code SceneCoordinator} object containing scene coordinator data.
-     * @param wdm  The {@code WhiskeyDataManager} object used for managing whiskey data.
-     * @param wdv  The {@code WhiskeyDataValidator} object used for validating input.
+     * @param sc The {@code SceneCoordinator} object containing scene coordinator data.
+     * @param wdm The {@code WhiskeyDataManager} object used for managing whiskey data.
+     * @param wdv The {@code WhiskeyDataValidator} object used for validating input.
      */
     public void inject(SceneCoordinator sc, WhiskeyDataManager wdm, WhiskeyDataValidator wdv) {
         this.sc = sc;

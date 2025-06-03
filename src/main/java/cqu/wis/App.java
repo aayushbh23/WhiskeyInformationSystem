@@ -20,23 +20,32 @@ import java.io.IOException;
 
 /**
  * Main application entry point for the Whiskey Information System.
- * This class initializes the JavaFX application, sets up the user interface using FXML,
- * connects to the whiskey database, and injects the necessary model and controller components
- * for application functionality.
- *
- * Expected FXML location: {@code /cqu/wis/view/query.fxml}
+ * This JavaFX application initializes the UI and injects the required
+ * data model and validation components. It connects to the whiskey and
+ * user databases, configures scene transitions and manages scene lifecycle
+ * via the {@link SceneCoordinator}.
  * 
- * This application allows users to browse and query whiskey data based on
- * distillery, region, age, and price criteria.
+ * The application supports the following scenes:
+ * Login scene (for user authentication)
+ * Password scene (for password changes)
+ * Query scene (for browsing and filtering whiskey records)
+ * 
+ * Expected FXML location: {@code /cqu/wis/view/{sceneKey}.fxml}
+ * Users can query whiskeys by distillery, region, age, and price criteria.
  *
  * @author Ayush Bhandari S12157470
  */
 public class App extends Application {
+
     /**
-     * Called when the JavaFX application is launched.
+     * Initializes the JavaFX application.
      * 
-     * Initializes the model classes ({@link WhiskeyData}, {@link WhiskeyDataManager}, {@link WhiskeyDataValidator}, {@link UserData}, {@link UserDataManager}, {@link UserDataValidator})
-     * loads the FXML user interface, injects dependencies into the controller, and displays the main window.
+     * This method:
+     * Creates and connects the data models: {@link WhiskeyData} and {@link UserData}
+     * Initializes managers and validators for both whiskey and user data
+     * Loads the FXML layouts for each scene
+     * Injects dependencies into each scene’s controller
+     * Registers scenes in the {@link SceneCoordinator} and starts the application with the login scene
      *
      * @param stage the primary stage for this application
      * @throws IOException if an error occurs during loading of the FXML layout
@@ -44,13 +53,9 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         SceneCoordinator sc = new SceneCoordinator(stage);
-        // Configure each scene and add it to the coordinator.
-        // Transitions between scenes are achieved by the controller for a 
-        // scene requesting the coordinator to make a particular scene the 
-        // root node of the scene graph.
 
         try {
-            // Create data objects
+            // Initialize data models, managers and validators
             WhiskeyData wd = new WhiskeyData();
             WhiskeyDataManager wdm = new WhiskeyDataManager(wd);
             WhiskeyDataValidator wdv = new WhiskeyDataValidator();
@@ -62,28 +67,26 @@ public class App extends Application {
             // Connect to databases
             wd.connect();
             ud.connect();
-            
-            // create the login scene
+
+            // Setup login scene
             Scene ls = makeScene(SceneKey.LOGIN);
-            // inject required objects into the login controller
             LoginController lc = (LoginController) ls.getUserData();
             lc.inject(sc, udm, udv);
             sc.addScene(SceneKey.LOGIN, ls);
-            
-            // create the password scene
+
+            // Setup password scene
             Scene ps = makeScene(SceneKey.PASSWORD);
-            // inject required objects into the password controller
             PasswordController pc = (PasswordController) ps.getUserData();
             pc.inject(sc, udm, udv);
             sc.addScene(SceneKey.PASSWORD, ps);
-            
-            // create the query scene 
+
+            // Setup query scene
             Scene qs = makeScene(SceneKey.QUERY);
-            // inject required objects into the query controller
             QueryController qc = (QueryController) qs.getUserData();
             qc.inject(sc, wdm, wdv);
             sc.addScene(SceneKey.QUERY, qs);
-            
+
+            // Start application with login scene
             sc.start(SceneKey.LOGIN);
 
         } catch (Exception e) {
@@ -91,11 +94,19 @@ public class App extends Application {
             System.exit(1);
         }
     }
-    
-    private static Scene makeScene(SceneKey key) throws Exception  {
-        // construct path name for fxml file
-        String fxml = "/cqu/wis/view/"+key.name().toLowerCase()+".fxml";
-        // create scene object and add a reference to its controller object
+
+    /**
+     * Helper method to create and load a {@link Scene} for the given {@link SceneKey}.
+     * 
+     * The FXML file path is constructed as {@code /cqu/wis/view/{sceneKey}.fxml},
+     * and the scene’s controller is set as user data for later injection.
+     *
+     * @param key the scene key indicating which scene to load
+     * @return the loaded {@link Scene} object
+     * @throws Exception if an error occurs during FXML loading
+     */
+    private static Scene makeScene(SceneKey key) throws Exception {
+        String fxml = "/cqu/wis/view/" + key.name().toLowerCase() + ".fxml";
         FXMLLoader loader = new FXMLLoader(App.class.getResource(fxml));
         Scene scene = new Scene(loader.load());
         scene.setUserData(loader.getController());
@@ -103,9 +114,9 @@ public class App extends Application {
     }
 
     /**
-     * Launches the application.
+     * Launches the JavaFX application.
      *
-     * @param args the command line arguments (not used)
+     * @param args command line arguments (not used)
      */
     public static void main(String[] args) {
         launch();

@@ -11,7 +11,7 @@ import java.util.List;
  * Manages retrieval and navigation of whiskey data records.
  * 
  * This class serves as a controller for accessing, storing, and navigating through a list of {@link WhiskeyDetails}
- * retrieved from a {@link WhiskeyData} data source. It supports fetching all records, filtering by region or age range,
+ * retrieved from a {@link WhiskeyData} data source. It supports fetching all records, filtering by region or age range
  * and cyclic navigation through the result set.
  *
  * It also provides methods to connect/disconnect from the data source and is used by the user interface
@@ -81,7 +81,7 @@ public class WhiskeyDataManager {
     /**
      * Retrieves the first whiskey record from the current dataset.
      * 
-     * @return the first {@link WhiskeyDetails} record, or {@code null} if the dataset is empty
+     * @return the first {@link WhiskeyDetails} record or {@code null} if the dataset is empty
      */
     public WhiskeyDetails first() {
         if (records.isEmpty()) return null;
@@ -94,7 +94,7 @@ public class WhiskeyDataManager {
      * Moves to and retrieves the next record in the dataset.
      * Loops back to the start when the end is reached.
      * 
-     * @return the next {@link WhiskeyDetails} record, or {@code null} if the dataset is empty
+     * @return the next {@link WhiskeyDetails} record or {@code null} if the dataset is empty
      */
     public WhiskeyDetails next() {
         if (records.isEmpty()) return null;
@@ -107,7 +107,7 @@ public class WhiskeyDataManager {
      * Moves to and retrieves the previous record in the dataset.
      * Loops back to the end when the start is reached.
      * 
-     * @return the previous {@link WhiskeyDetails} record, or {@code null} if the dataset is empty
+     * @return the previous {@link WhiskeyDetails} record or {@code null} if the dataset is empty
      */
     public WhiskeyDetails previous() {
         if (records.isEmpty()) return null;
